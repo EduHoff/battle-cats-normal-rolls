@@ -2,14 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Rust Project</title>
-    <link rel="stylesheet" href="/static/tacit.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Cats Normal Seed Tracker</title>
+    <link rel="icon" type="image/png" href="/static/img/normal_cat_ticket.png">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <main style="max-width: 600px; margin: 40px auto; padding: 20px;">
-        <h1>Rust Server Online!</h1>
-        <p>This is your simple website running natively in Rust.</p>
-        <button type="submit">Tacit CSS is working</button>
+    <header>
+        <h1>Battle Cats Normal Seed Tracker</h1>
+        <p><small>AGPLv3 Open Source Software | <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">[Source Code]</a></small></p>
+    </header>
+
+    <main>
+        <section>
+            <form method="GET" action="/">
+                <label for="seed">Seed:</label>
+                <input type="text" id="seed" name="seed" value="{{ current_seed }}">
+                
+                <label for="count">Count:</label>
+                <select id="count" name="rolls" onchange="this.form.submit()">
+                    <option value="100" {% if num_rolls == 100 %}selected{% endif %}>100</option>
+                    <option value="150" {% if num_rolls == 150 %}selected{% endif %}>150</option>
+                    <option value="200" {% if num_rolls == 200 %}selected{% endif %}>200</option>
+                </select>
+
+                <button type="submit">Roll</button>
+            </form>
+        </section>
+
+        <!-- Tracker Table -->
+        <table class="tracker-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Result</th>
+                    <th>Guaranteed</th>
+                    <th>Alt. result</th>
+                    <th>Alt. guaranteed</th>
+                    <th>Alt. No.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <!-- Track A No. -->
+                    <td><a href="/?seed={{ row.track_a_seed }}">{{ loop.index }}A</a></td>
+
+                    <!-- Result Track A -->
+                    <td class="top-cell rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
+                        <a href="/?seed={{ row.cell_a.seed }}">{{ row.cell_a.name }}</a>
+                    </td>
+
+                    <!-- Guaranteed Track A -->
+                    <td class="top-cell">
+                        {% if row.cell_a.guaranteed %}
+                            <a href="/?seed={{ row.cell_a.guaranteed_seed }}">{{ row.cell_a.guaranteed_name }} -> {{ row.cell_a.guaranteed_target }}</a>
+                        {% endif %}
+                    </td>
+
+                    <!-- Alt Result Track B -->
+                    <td class="top-cell rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
+                        <a href="/?seed={{ row.cell_b.seed }}">{{ row.cell_b.name }}</a>
+                    </td>
+
+                    <!-- Alt Guaranteed Track B -->
+                    <td class="top-cell">
+                        {% if row.cell_b.guaranteed %}
+                            <a href="/?seed={{ row.cell_b.guaranteed_seed }}">{{ row.cell_b.guaranteed_name }} -> {{ row.cell_b.guaranteed_target }}</a>
+                        {% endif %}
+                    </td>
+
+                    <!-- Track B No. -->
+                    <td><a href="/?seed={{ row.track_b_seed }}">{{ loop.index }}B</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </main>
+
+    <footer style="margin-top: 40px; text-align: center;">
+        <hr>
+        <p>
+            <small>
+                battle-cats-normal-rolls is free software licensed under 
+                <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU AGPLv3</a>.<br>
+                You can redistribute it and/or modify it under the terms of the license. 
+                Source code is available <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">here</a>.
+            </small>
+        </p>
+    </footer>
 </body>
 </html>
