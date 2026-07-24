@@ -9,13 +9,11 @@ pub struct FinderResult {
     pub next_roll_is_reroll: bool,
 }
 
-// Finds all seeds matching the sequence provided by the user using Rayon parallel search
 pub fn find_seeds(user_rolls: &[String], banner: &BannerData) -> Vec<FinderResult> {
     if user_rolls.is_empty() {
         return Vec::new();
     }
 
-    // Parallel search across 32-bit integer space (1..=u32::MAX)
     (1..=u32::MAX)
         .into_par_iter()
         .filter_map(|seed| {
@@ -35,22 +33,18 @@ pub fn find_seeds(user_rolls: &[String], banner: &BannerData) -> Vec<FinderResul
         .collect()
 }
 
-// Checks if a candidate seed produces the exact sequence of rolls entered by the user
 fn check_seed_matches(initial_seed: u32, user_rolls: &[String], banner: &BannerData) -> bool {
     let mut current_seed = initial_seed;
     let mut last_unit_name: Option<String> = None;
 
     for user_roll in user_rolls {
-        // Rarity Roll
         current_seed = advance_seed(current_seed);
         let rarity = get_rarity(current_seed, &banner.rate_cum_sum);
         let pool = &banner.pools[rarity];
 
-        // Unit Roll
         current_seed = advance_seed(current_seed);
         let (unit_id, unit_name) = get_unit(current_seed, &pool.units, &[]);
 
-        // Duplicate Reroll Check
         let rolled_unit = if pool.reroll && Some(&unit_name) == last_unit_name.as_ref() {
             current_seed = advance_seed(current_seed);
             let (_reroll_id, rerolled_name) = get_unit(current_seed, &pool.units, &[unit_id]);
@@ -69,7 +63,6 @@ fn check_seed_matches(initial_seed: u32, user_rolls: &[String], banner: &BannerD
     true
 }
 
-// Simulates rolls from the found seed to calculate the resulting seed ("After Pulls")
 fn calculate_seed_after(initial_seed: u32, num_pulls: usize, banner: &BannerData) -> (u32, bool) {
     let mut current_seed = initial_seed;
     let mut last_unit_name: Option<String> = None;
@@ -91,7 +84,6 @@ fn calculate_seed_after(initial_seed: u32, num_pulls: usize, banner: &BannerData
         }
     }
 
-    // Check if the next roll (num_pulls + 1) would trigger a duplicate reroll
     let peek_seed = advance_seed(current_seed);
     let peek_rarity = get_rarity(peek_seed, &banner.rate_cum_sum);
     let peek_pool = &banner.pools[peek_rarity];

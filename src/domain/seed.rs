@@ -1,6 +1,5 @@
 use crate::domain::banner::BannerData;
 
-// Advances the seed using 32-bit Xorshift algorithm
 pub fn advance_seed(mut seed: u32) -> u32 {
     seed ^= seed << 13;
     seed ^= seed >> 17;
@@ -22,44 +21,52 @@ pub struct Roll {
     pub unit_if_dupe: Option<UnitRoll>,
 }
 
-// Calculates rarity index based on accumulated rates
 pub fn get_rarity(seed: u32, rate_cum_sum: &[u32]) -> usize {
-    let seed_mod = seed % 10000;
+    let max_rate = *rate_cum_sum.last().unwrap_or(&10000);
+    if max_rate == 0 {
+        return 0;
+    }
+
+    let seed_mod = seed % max_rate;
     rate_cum_sum
         .iter()
         .position(|&sum| seed_mod < sum)
         .unwrap_or(0)
 }
 
-// Gets unit from pool while optionally excluding previously rolled indices (rerolls)
 pub fn get_unit(seed: u32, units: &[String], removed_indices: &[usize]) -> (usize, String) {
-    if removed_indices.is_empty() {
-        let seed_mod = (seed as usize) % units.len();
-        (seed_mod, units[seed_mod].clone())
-    } else {
-        let num_units_in_pool = units.len() - removed_indices.len();
-        let seed_mod = (seed as usize) % num_units_in_pool;
-        let num_removed_before = removed_indices
-            .iter()
-            .filter(|&&idx| idx <= seed_mod)
-            .count();
-        let rerolled_seed_mod = seed_mod + num_removed_before;
-
-        (seed_mod, units[rerolled_seed_mod].clone())
+    if units.is_empty() {
+        return (0, String::new());
     }
+
+    let num_units_in_pool = units.len().saturating_sub(removed_indices.len());
+    if num_units_in_pool == 0 {
+        return (0, units[0].clone());
+    }
+
+    let seed_mod = (seed as usize) % num_units_in_pool;
+
+    let mut real_idx = seed_mod;
+    let mut sorted_removed = removed_indices.to_vec();
+    sorted_removed.sort_unstable();
+
+    for &removed in &sorted_removed {
+        if removed <= real_idx {
+            real_idx += 1;
+        }
+    }
+
+    (real_idx, units[real_idx].clone())
 }
 
-// Generates a sequence of rolls for a given banner
 pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> Vec<Roll> {
     let mut rolls = Vec::with_capacity(num_rolls);
 
     for _ in 0..num_rolls {
-        // Rarity calculation
         seed = advance_seed(seed);
         let rarity_seed = seed;
         let rarity = get_rarity(rarity_seed, &banner.rate_cum_sum);
 
-        // Main unit calculation
         seed = advance_seed(seed);
         let unit_seed = seed;
         let pool = &banner.pools[rarity];
@@ -70,7 +77,6 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
             unit_seed,
         };
 
-        // Duplicate unit (reroll) calculation
         let mut unit_if_dupe = None;
         if pool.reroll {
             let mut reroll_seed = unit_seed;

@@ -1,4 +1,11 @@
-use axum::{Router, http::StatusCode, response::Html, routing::get};
+use axum::{
+    Router,
+    routing::{get /*post*/},
+};
+use battle_cats_normal_rolls::routes::{
+    //finder::{find_seed_handler, finder_page},
+    home::home_page,
+};
 use std::error::Error;
 use tower_http::services::ServeDir;
 
@@ -6,6 +13,8 @@ use tower_http::services::ServeDir;
 async fn main() -> Result<(), Box<dyn Error>> {
     let app = Router::new()
         .route("/", get(home_page))
+        //.route("/finder", get(finder_page))
+        //.route("/find", post(find_seed_handler))
         .nest_service("/static", ServeDir::new("static"));
 
     let addr = "127.0.0.1:3000";
@@ -15,11 +24,4 @@ async fn main() -> Result<(), Box<dyn Error>> {
     axum::serve(listener, app).await?;
 
     Ok(())
-}
-
-async fn home_page() -> Result<Html<String>, StatusCode> {
-    tokio::fs::read_to_string("templates/index.html")
-        .await
-        .map(Html)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
