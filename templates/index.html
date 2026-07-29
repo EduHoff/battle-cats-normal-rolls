@@ -16,17 +16,42 @@
     <main>
         <section>
             <form method="GET" action="/">
-                <label for="seed">Seed:</label>
-                <input type="text" id="seed" name="seed" value="{{ current_seed }}">
-                
-                <label for="count">Count:</label>
-                <select id="count" name="rolls" onchange="this.form.submit()">
-                    <option value="100" {% if num_rolls == 100 %}selected{% endif %}>100</option>
-                    <option value="150" {% if num_rolls == 150 %}selected{% endif %}>150</option>
-                    <option value="200" {% if num_rolls == 200 %}selected{% endif %}>200</option>
-                </select>
+                <div class="controls">
+                    <label for="seed">Seed:</label>
+                    <input
+                        type="number"
+                        id="seed"
+                        name="seed"
+                        value="{{ seed | default(value='1') }}"
+                        required
+                    >
 
-                <button type="submit">Roll</button>
+                    <!-- 1) Input numérico para rolls -->
+                    <label for="count">Count:</label>
+                    <input
+                        type="number"
+                        id="count"
+                        name="count"
+                        min="1"
+                        max="1000"
+                        value="{{ count | default(value='100') }}"
+                    >
+
+                    <!-- 2) Dropdown único para selecionar o banner -->
+                    <label for="event">Event / Banner:</label>
+                    <select id="event" name="event">
+                        {% for b in banners %}
+                            <option
+                                value="{{ b.short_name }}"
+                                {% if b.short_name == selected_event %}selected{% endif %}
+                            >
+                                {{ b.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Update</button>
+                </div>
             </form>
         </section>
 
@@ -84,9 +109,9 @@
         <hr>
         <p>
             <small>
-                battle-cats-normal-rolls is free software licensed under 
+                battle-cats-normal-rolls is free software licensed under
                 <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU AGPLv3</a>.<br>
-                You can redistribute it and/or modify it under the terms of the license. 
+                You can redistribute it and/or modify it under the terms of the license.
                 Source code is available <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">here</a>.
             </small>
         </p>

@@ -6,13 +6,24 @@ use battle_cats_normal_rolls::routes::{
     //finder::{find_seed_handler, finder_page},
     home::home_page,
 };
-use std::error::Error;
+use std::{error::Error, sync::Arc};
+use tera::Tera;
 use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let mut tera = Tera::new();
+
+    tera.add_template_files(vec![
+        ("templates/index.html", Some("index.html")),
+        ("templates/finder.html", Some("finder.html")),
+    ])?;
+
+    let app_state = Arc::new(tera);
+
     let app = Router::new()
         .route("/", get(home_page))
+        .with_state(app_state)
         //.route("/finder", get(finder_page))
         //.route("/find", post(find_seed_handler))
         .nest_service("/static", ServeDir::new("static"));
