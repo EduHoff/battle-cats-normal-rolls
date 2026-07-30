@@ -45,10 +45,16 @@ fn check_seed_matches(initial_seed: u32, user_rolls: &[String], banner: &BannerD
         current_seed = advance_seed(current_seed);
         let (unit_id, unit_name) = get_unit(current_seed, &pool.units, &[]);
 
+        let mut reroll_removed = vec![unit_id];
         let rolled_unit = if pool.reroll && Some(&unit_name) == last_unit_name.as_ref() {
-            current_seed = advance_seed(current_seed);
-            let (_reroll_id, rerolled_name) = get_unit(current_seed, &pool.units, &[unit_id]);
-            rerolled_name
+            let mut current_unit_name = unit_name;
+            while Some(&current_unit_name) == last_unit_name.as_ref() {
+                current_seed = advance_seed(current_seed);
+                let (next_id, next_name) = get_unit(current_seed, &pool.units, &reroll_removed);
+                reroll_removed.push(next_id);
+                current_unit_name = next_name;
+            }
+            current_unit_name
         } else {
             unit_name
         };
@@ -75,13 +81,21 @@ fn calculate_seed_after(initial_seed: u32, num_pulls: usize, banner: &BannerData
         current_seed = advance_seed(current_seed);
         let (unit_id, unit_name) = get_unit(current_seed, &pool.units, &[]);
 
-        if pool.reroll && Some(&unit_name) == last_unit_name.as_ref() {
-            current_seed = advance_seed(current_seed);
-            let (_reroll_id, rerolled_name) = get_unit(current_seed, &pool.units, &[unit_id]);
-            last_unit_name = Some(rerolled_name);
+        let mut reroll_removed = vec![unit_id];
+        let rolled_unit = if pool.reroll && Some(&unit_name) == last_unit_name.as_ref() {
+            let mut current_unit_name = unit_name;
+            while Some(&current_unit_name) == last_unit_name.as_ref() {
+                current_seed = advance_seed(current_seed);
+                let (next_id, next_name) = get_unit(current_seed, &pool.units, &reroll_removed);
+                reroll_removed.push(next_id);
+                current_unit_name = next_name;
+            }
+            current_unit_name
         } else {
-            last_unit_name = Some(unit_name);
-        }
+            unit_name
+        };
+
+        last_unit_name = Some(rolled_unit);
     }
 
     let peek_seed = advance_seed(current_seed);

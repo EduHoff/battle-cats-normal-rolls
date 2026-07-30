@@ -29,6 +29,9 @@ pub struct CellData {
     pub seed: u32,
     pub rarity: usize,
     pub is_utility: bool,
+    pub dupe_name: Option<String>,
+    pub dupe_seed: Option<u32>,
+    pub dupe_target_no: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -145,6 +148,56 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
             || roll_b.unit_if_distinct.unit_name.contains("NP")
             || roll_b.unit_if_distinct.unit_name.contains("Catfruit");
 
+        let (dupe_name_a, dupe_seed_a, dupe_target_a) = if i > 0
+            && rolls_a[i].unit_if_distinct.unit_name == rolls_a[i - 1].unit_if_distinct.unit_name
+            && rolls_a[i].unit_if_dupe.is_some()
+        {
+            let target_seed = if i + 1 < count {
+                rolls_b[i + 1].unit_if_distinct.unit_seed
+            } else {
+                roll_a.unit_if_distinct.unit_seed
+            };
+
+            let alt_name = roll_a
+                .unit_if_dupe
+                .as_ref()
+                .map(|d| d.unit_name.clone())
+                .unwrap_or_else(|| roll_a.unit_if_distinct.unit_name.clone());
+
+            (
+                Some(alt_name),
+                Some(target_seed),
+                Some(format!("{}B", i + 2)),
+            )
+        } else {
+            (None, None, None)
+        };
+
+        let (dupe_name_b, dupe_seed_b, dupe_target_b) = if i > 0
+            && rolls_b[i].unit_if_distinct.unit_name == rolls_b[i - 1].unit_if_distinct.unit_name
+            && rolls_b[i].unit_if_dupe.is_some()
+        {
+            let target_seed = if i + 1 < count {
+                rolls_a[i + 1].unit_if_distinct.unit_seed
+            } else {
+                roll_b.unit_if_distinct.unit_seed
+            };
+
+            let alt_name = roll_b
+                .unit_if_dupe
+                .as_ref()
+                .map(|d| d.unit_name.clone())
+                .unwrap_or_else(|| roll_b.unit_if_distinct.unit_name.clone());
+
+            (
+                Some(alt_name),
+                Some(target_seed),
+                Some(format!("{}A", i + 2)),
+            )
+        } else {
+            (None, None, None)
+        };
+
         rows.push(Row {
             track_a_seed: roll_a.unit_if_distinct.unit_seed,
             track_b_seed: roll_b.unit_if_distinct.unit_seed,
@@ -153,12 +206,18 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
                 seed: roll_a.unit_if_distinct.unit_seed,
                 rarity: roll_a.rarity,
                 is_utility: is_utility_a,
+                dupe_name: dupe_name_a,
+                dupe_seed: dupe_seed_a,
+                dupe_target_no: dupe_target_a,
             },
             cell_b: CellData {
                 name: roll_b.unit_if_distinct.unit_name.clone(),
                 seed: roll_b.unit_if_distinct.unit_seed,
                 rarity: roll_b.rarity,
                 is_utility: is_utility_b,
+                dupe_name: dupe_name_b,
+                dupe_seed: dupe_seed_b,
+                dupe_target_no: dupe_target_b,
             },
         });
     }

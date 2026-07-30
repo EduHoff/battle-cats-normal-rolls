@@ -73,18 +73,46 @@
                         </a>
                     </td>
 
-                    <!-- Result Track A (adicionada classe pick) -->
+                    <!-- Result Track A -->
                     <td class="top-cell pick rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
                         <a href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
                             {{ row.cell_a.name }}
                         </a>
+
+                        {% if row.cell_a.dupe_name is defined and row.cell_a.dupe_name %}
+                            <div class="reroll-info">
+                                <small>
+                                    {% if row.cell_a.dupe_seed is defined and row.cell_a.dupe_seed %}
+                                        <a href="/?seed={{ row.cell_a.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
+                                            {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}
+                                        </a>
+                                    {% else %}
+                                        {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        {% endif %}
                     </td>
 
-                    <!-- Alt Result Track B (adicionada classe pick) -->
+                    <!-- Alt Result Track B -->
                     <td class="top-cell pick rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
                         <a href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
                             {{ row.cell_b.name }}
                         </a>
+
+                        {% if row.cell_b.dupe_name is defined and row.cell_b.dupe_name %}
+                            <div class="reroll-info">
+                                <small>
+                                    {% if row.cell_b.dupe_seed is defined and row.cell_b.dupe_seed %}
+                                        <a href="/?seed={{ row.cell_b.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
+                                            &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}
+                                        </a>
+                                    {% else %}
+                                        &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        {% endif %}
                     </td>
 
                     <!-- Track B No. -->
