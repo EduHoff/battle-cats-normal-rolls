@@ -54,7 +54,7 @@
         </section>
 
         <!-- Tracker Table -->
-        <table class="tracker-table">
+        <table class="tracker-table" id="tracker-table">
             <thead>
                 <tr>
                     <th>No.</th>
@@ -73,15 +73,15 @@
                         </a>
                     </td>
 
-                    <!-- Result Track A -->
-                    <td class="top-cell rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
+                    <!-- Result Track A (adicionada classe pick) -->
+                    <td class="top-cell pick rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
                         <a href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
                             {{ row.cell_a.name }}
                         </a>
                     </td>
 
-                    <!-- Alt Result Track B -->
-                    <td class="top-cell rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
+                    <!-- Alt Result Track B (adicionada classe pick) -->
+                    <td class="top-cell pick rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
                         <a href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
                             {{ row.cell_b.name }}
                         </a>
@@ -110,5 +110,7 @@
             </small>
         </p>
     </footer>
+
+<script src="/static/js/tracker.js"></script>
 </body>
 </html>
