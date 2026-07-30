@@ -12,8 +12,8 @@
 * **Track Switches:**  
   Track switches in the normal gacha work the exact same way as in rare banners. You can strategically roll duplicate units to trigger or avoid track switches.
 
-* **Seed Navigation & Selection:**  
-  Clicking on a unit's name will update your active seed to that point in the track. Clicking elsewhere inside a cell will highlight your next 10 rolls for easier planning.
+* **Interactive Path Simulation:**  
+Clicking on any cell in the table simulates your roll path from the top. Previous rolls along the path are marked as consumed (`.picked`), taking into account any duplicate track switches, and your very next available roll is highlighted (`.next_position`) for precise roll tracking.
 
 * **What is `100K XP (β)`?**  
   The *Lucky Ticket G* banner uses a special variant of the 100K XP item with a different internal ID from the standard 100K XP used in other banners.  
