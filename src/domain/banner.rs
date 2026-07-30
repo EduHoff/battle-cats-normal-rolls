@@ -309,4 +309,32 @@ impl BannerData {
             .flat_map(|pool| pool.units.clone())
             .collect()
     }
+
+    pub fn is_utility(name: &str) -> bool {
+            let base_upgrades = [
+                "Cat Cannon Attack",
+                "Cat Cannon Charge",
+                "Worker Cat Rate",
+                "Worker Cat Wallet",
+                "Base Defense",
+                "Research",
+                "Accounting",
+                "Study",
+                "Cat Energy",
+                "Speed Up",
+                "Cat CPU",
+                "Rich Cat",
+                "Cat Jobs",
+                "Sniper the Cat",
+                "Treasure Radar",
+            ];
+    
+            base_upgrades.contains(&name)
+                || name.contains("Ticket")
+                || name.contains("NP")
+                || name.contains("Catfruit")
+                || name.contains("Catseye")
+                || name.contains("XP")
+                || name.contains("Catamin")
+        }
 }

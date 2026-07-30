@@ -140,13 +140,8 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
         let roll_a = &rolls_a[i];
         let roll_b = &rolls_b[i];
 
-        let is_utility_a = roll_a.unit_if_distinct.unit_name.contains("Ticket")
-            || roll_a.unit_if_distinct.unit_name.contains("NP")
-            || roll_a.unit_if_distinct.unit_name.contains("Catfruit");
-
-        let is_utility_b = roll_b.unit_if_distinct.unit_name.contains("Ticket")
-            || roll_b.unit_if_distinct.unit_name.contains("NP")
-            || roll_b.unit_if_distinct.unit_name.contains("Catfruit");
+        let is_utility_a = BannerData::is_utility(&roll_a.unit_if_distinct.unit_name);
+        let is_utility_b = BannerData::is_utility(&roll_b.unit_if_distinct.unit_name);
 
         let (dupe_name_a, dupe_seed_a, dupe_target_a) = if i > 0
             && rolls_a[i].unit_if_distinct.unit_name == rolls_a[i - 1].unit_if_distinct.unit_name
