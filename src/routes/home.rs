@@ -41,7 +41,7 @@ pub async fn home_page(
     let mut context = Context::new();
     context.insert("seed", &current_seed);
     context.insert("count", &current_count);
-    context.insert("selected_event", &current_event);
+    context.insert("selected_event", &selected_banner.short_name);
     context.insert("banners", &all_banners);
     context.insert("rows", &rows);
 

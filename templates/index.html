@@ -26,7 +26,6 @@
                         required
                     >
 
-                    <!-- 1) Input numérico para rolls -->
                     <label for="count">Count:</label>
                     <input
                         type="number"
@@ -37,7 +36,6 @@
                         value="{{ count | default(value='100') }}"
                     >
 
-                    <!-- 2) Dropdown único para selecionar o banner -->
                     <label for="event">Event / Banner:</label>
                     <select id="event" name="event">
                         {% for b in banners %}
@@ -69,20 +67,32 @@
                 {% for row in rows %}
                 <tr>
                     <!-- Track A No. -->
-                    <td><a href="/?seed={{ row.track_a_seed }}">{{ loop.index }}A</a></td>
+                    <td>
+                        <a href="/?seed={{ row.track_a_seed }}&count={{ count }}&event={{ selected_event }}">
+                            {{ loop.index }}A
+                        </a>
+                    </td>
 
                     <!-- Result Track A -->
                     <td class="top-cell rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
-                        <a href="/?seed={{ row.cell_a.seed }}">{{ row.cell_a.name }}</a>
+                        <a href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
+                            {{ row.cell_a.name }}
+                        </a>
                     </td>
 
                     <!-- Alt Result Track B -->
                     <td class="top-cell rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
-                        <a href="/?seed={{ row.cell_b.seed }}">{{ row.cell_b.name }}</a>
+                        <a href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
+                            {{ row.cell_b.name }}
+                        </a>
                     </td>
 
                     <!-- Track B No. -->
-                    <td><a href="/?seed={{ row.track_b_seed }}">{{ loop.index }}B</a></td>
+                    <td>
+                        <a href="/?seed={{ row.track_b_seed }}&count={{ count }}&event={{ selected_event }}">
+                            {{ loop.index }}B
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
