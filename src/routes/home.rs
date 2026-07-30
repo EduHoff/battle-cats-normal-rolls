@@ -7,7 +7,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 use tera::{Context, Tera};
 
-use crate::domain::banner::BannerData;
+use crate::domain::{banner::BannerData, seed::build_tracker_rows};
 
 #[derive(Deserialize)]
 pub struct TrackParams {
@@ -31,14 +31,19 @@ pub async fn home_page(
             .unwrap_or_default()
     });
 
+    let selected_banner = all_banners
+        .iter()
+        .find(|b| b.short_name == current_event)
+        .unwrap_or(&all_banners[0]);
+
+    let rows = build_tracker_rows(current_seed, current_count, selected_banner);
+
     let mut context = Context::new();
     context.insert("seed", &current_seed);
     context.insert("count", &current_count);
     context.insert("selected_event", &current_event);
     context.insert("banners", &all_banners);
-
-    let empty_rows: Vec<String> = Vec::new(); // TEMPORARY FIX
-    context.insert("rows", &empty_rows); // TEMPORARY FIX
+    context.insert("rows", &rows);
 
     let rendered = tera.render("index.html", &context).map_err(|err| {
         eprintln!("Failed to render index.html template: {err}");

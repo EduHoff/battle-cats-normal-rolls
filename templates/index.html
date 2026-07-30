@@ -61,9 +61,7 @@
                 <tr>
                     <th>No.</th>
                     <th>Result</th>
-                    <th>Guaranteed</th>
                     <th>Alt. result</th>
-                    <th>Alt. guaranteed</th>
                     <th>Alt. No.</th>
                 </tr>
             </thead>
@@ -78,23 +76,9 @@
                         <a href="/?seed={{ row.cell_a.seed }}">{{ row.cell_a.name }}</a>
                     </td>
 
-                    <!-- Guaranteed Track A -->
-                    <td class="top-cell">
-                        {% if row.cell_a.guaranteed %}
-                            <a href="/?seed={{ row.cell_a.guaranteed_seed }}">{{ row.cell_a.guaranteed_name }} -> {{ row.cell_a.guaranteed_target }}</a>
-                        {% endif %}
-                    </td>
-
                     <!-- Alt Result Track B -->
                     <td class="top-cell rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
                         <a href="/?seed={{ row.cell_b.seed }}">{{ row.cell_b.name }}</a>
-                    </td>
-
-                    <!-- Alt Guaranteed Track B -->
-                    <td class="top-cell">
-                        {% if row.cell_b.guaranteed %}
-                            <a href="/?seed={{ row.cell_b.guaranteed_seed }}">{{ row.cell_b.guaranteed_name }} -> {{ row.cell_b.guaranteed_target }}</a>
-                        {% endif %}
                     </td>
 
                     <!-- Track B No. -->

@@ -316,7 +316,8 @@ ul, ol, dl, hr, pre, table, fieldset, figure, address {
 section {
   margin-left: auto;
   margin-right: auto;
-  width: 900px;
+  max-width: 700px;
+  width: 100%;
 }
 
 article, header, footer {
@@ -557,8 +558,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .tracker-table {
   border-collapse: collapse;
-  width: 100%;
-  margin-top: 15px;
+  width: auto;
+  max-width: 580px;
+  margin: 15px auto 0 auto;
   font-size: 14px;
 }
 

@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::domain::banner::BannerData;
 
 pub fn advance_seed(mut seed: u32) -> u32 {
@@ -7,18 +9,34 @@ pub fn advance_seed(mut seed: u32) -> u32 {
     seed
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct UnitRoll {
     pub unit_name: String,
     pub unit_seed: u32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Roll {
     pub rarity: usize,
     pub rarity_seed: u32,
     pub unit_if_distinct: UnitRoll,
     pub unit_if_dupe: Option<UnitRoll>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CellData {
+    pub name: String,
+    pub seed: u32,
+    pub rarity: usize,
+    pub is_utility: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Row {
+    pub track_a_seed: u32,
+    pub track_b_seed: u32,
+    pub cell_a: CellData,
+    pub cell_b: CellData,
 }
 
 pub fn get_rarity(seed: u32, rate_cum_sum: &[u32]) -> usize {
@@ -106,6 +124,46 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
     }
 
     rolls
+}
+
+pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) -> Vec<Row> {
+    let rolls_a = generate_rolls(initial_seed, count, banner);
+    let b_initial_seed = advance_seed(advance_seed(initial_seed));
+    let rolls_b = generate_rolls(b_initial_seed, count, banner);
+
+    let mut rows = Vec::with_capacity(count);
+
+    for i in 0..count {
+        let roll_a = &rolls_a[i];
+        let roll_b = &rolls_b[i];
+
+        let is_utility_a = roll_a.unit_if_distinct.unit_name.contains("Ticket")
+            || roll_a.unit_if_distinct.unit_name.contains("NP")
+            || roll_a.unit_if_distinct.unit_name.contains("Catfruit");
+
+        let is_utility_b = roll_b.unit_if_distinct.unit_name.contains("Ticket")
+            || roll_b.unit_if_distinct.unit_name.contains("NP")
+            || roll_b.unit_if_distinct.unit_name.contains("Catfruit");
+
+        rows.push(Row {
+            track_a_seed: roll_a.unit_if_distinct.unit_seed,
+            track_b_seed: roll_b.unit_if_distinct.unit_seed,
+            cell_a: CellData {
+                name: roll_a.unit_if_distinct.unit_name.clone(),
+                seed: roll_a.unit_if_distinct.unit_seed,
+                rarity: roll_a.rarity,
+                is_utility: is_utility_a,
+            },
+            cell_b: CellData {
+                name: roll_b.unit_if_distinct.unit_name.clone(),
+                seed: roll_b.unit_if_distinct.unit_seed,
+                rarity: roll_b.rarity,
+                is_utility: is_utility_b,
+            },
+        });
+    }
+
+    rows
 }
 
 #[cfg(test)]
