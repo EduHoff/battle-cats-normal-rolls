@@ -131,7 +131,8 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
 
 pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) -> Vec<Row> {
     let rolls_a = generate_rolls(initial_seed, count, banner);
-    let b_initial_seed = advance_seed(advance_seed(initial_seed));
+
+    let b_initial_seed = advance_seed(initial_seed);
     let rolls_b = generate_rolls(b_initial_seed, count, banner);
 
     let mut rows = Vec::with_capacity(count);

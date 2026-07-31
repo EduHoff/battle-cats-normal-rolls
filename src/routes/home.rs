@@ -39,12 +39,12 @@ pub async fn home_page(
         .unwrap_or(&all_banners[0]);
 
     let mut available_units: Vec<String> = selected_banner
-            .pools
-            .iter()
-            .flat_map(|pool| pool.units.clone())
-            .collect();
-        available_units.sort();
-        available_units.dedup();
+        .pools
+        .iter()
+        .flat_map(|pool| pool.units.clone())
+        .collect();
+    available_units.sort();
+    available_units.dedup();
 
     let rows = build_tracker_rows(current_seed, current_count, selected_banner);
 
