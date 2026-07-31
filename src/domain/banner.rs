@@ -321,20 +321,10 @@ impl BannerData {
                 "Accounting",
                 "Study",
                 "Cat Energy",
-                "Speed Up",
-                "Cat CPU",
-                "Rich Cat",
-                "Cat Jobs",
-                "Sniper the Cat",
-                "Treasure Radar",
             ];
     
             base_upgrades.contains(&name)
                 || name.contains("Ticket")
                 || name.contains("NP")
-                || name.contains("Catfruit")
-                || name.contains("Catseye")
-                || name.contains("XP")
-                || name.contains("Catamin")
         }
 }

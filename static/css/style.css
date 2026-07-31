@@ -627,3 +627,47 @@ td.bottom-cell {
     #ffffff 10px
   );
 }
+
+.highlight-find {
+    background-color: #00ff00 !important;
+    color: #000000 !important;
+    font-weight: bold;
+}
+
+.top-nav {
+  margin-bottom: 15px;
+}
+
+.top-nav a {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  color: #333;
+  display: inline-block;
+  font-weight: 600;
+  margin-right: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+
+.top-nav a.active {
+  background-color: #275a90;
+  color: #ffffff;
+}
+
+.controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.controls label {
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.controls select,
+.controls input {
+  margin-bottom: 0;
+}

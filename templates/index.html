@@ -8,9 +8,14 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <header>
+    <header>     
         <h1>Battle Cats Normal Seed Tracker</h1>
         <p><small>AGPLv3 Open Source Software | <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">[Source Code]</a></small></p>
+
+        <nav class="top-nav">
+            <a href="/" class="active">Seed Tracker</a>
+            <a href="/finder">Seed Finder</a>
+        </nav>
     </header>
 
     <main>
@@ -44,6 +49,19 @@
                                 {% if b.short_name == selected_event %}selected{% endif %}
                             >
                                 {{ b.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="find-next">Find next:</label>
+                    <select id="find-next" name="find">
+                        <option value=""></option>
+                        {% for unit in available_units %}
+                            <option 
+                                value="{{ unit }}"
+                                {% if unit == selected_find %}selected{% endif %}
+                            >
+                                {{ unit }}
                             </option>
                         {% endfor %}
                     </select>
@@ -140,5 +158,6 @@
     </footer>
 
 <script src="/static/js/tracker.js"></script>
+<script src="/static/js/find_next.js"></script>
 </body>
 </html>
