@@ -49,6 +49,7 @@ pub async fn home_page(
     let rows = build_tracker_rows(current_seed, current_count, selected_banner);
 
     let mut context = Context::new();
+    context.insert("active_tab", "home");
     context.insert("seed", &current_seed);
     context.insert("count", &current_count);
     context.insert("selected_event", &selected_banner.short_name);

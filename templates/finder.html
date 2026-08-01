@@ -8,15 +8,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Battle Cats Normal Seed Tracker</h1>
-        <p><small>AGPLv3 Open Source Software | <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">[Source Code]</a></small></p>
-
-        <nav class="top-nav">
-            <a href="/">Seed Tracker</a>
-            <a href="/finder" class="active">Seed Finder</a>
-        </nav>
-    </header>
+    {% include "header.html" %}
 
     <main>
         <section class="instructions">
@@ -101,17 +93,7 @@
         {% endif %}
     </main>
 
-    <footer style="margin-top: 40px; text-align: center;">
-        <hr>
-        <p>
-            <small>
-                battle-cats-normal-rolls is free software licensed under
-                <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU AGPLv3</a>.<br>
-                You can redistribute it and/or modify it under the terms of the license.
-                Source code is available <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">here</a>.
-            </small>
-        </p>
-    </footer>
+    {% include "footer.html" %}
 
 <script src="/static/js/finder-form.js" defer></script>
 </body>

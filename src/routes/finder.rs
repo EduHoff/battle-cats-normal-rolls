@@ -15,6 +15,7 @@ pub async fn finder_page(State(tera): State<Arc<Tera>>) -> impl IntoResponse {
     let available_units = default_banner.all_units();
 
     let mut context = Context::new();
+    context.insert("active_tab", "finder");
     context.insert("banners", &banners);
     context.insert("selected_event", &default_banner.short_name);
     context.insert("available_units", &available_units);
@@ -56,6 +57,7 @@ pub async fn find_seed_handler(
     let available_units = banner.all_units();
 
     let mut context = Context::new();
+    context.insert("active_tab", "finder");
     context.insert("banners", &banners);
     context.insert("selected_event", &banner.short_name);
     context.insert("available_units", &available_units);

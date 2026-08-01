@@ -17,6 +17,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tera.add_template_files(vec![
         ("templates/index.html", Some("index.html")),
         ("templates/finder.html", Some("finder.html")),
+        ("templates/header.html", Some("header.html")),
+        ("templates/footer.html", Some("footer.html")),
     ])?;
 
     let app_state = Arc::new(tera);

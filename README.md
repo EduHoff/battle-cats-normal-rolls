@@ -47,7 +47,7 @@ If you prefer not to install the Rust toolchain, you can build and run the appli
 ```bash
 git clone https://github.com/EduHoff/battle-cats-normal-rolls.git
 cd battle-cats-normal-rolls
-docker compose up --build
+docker compose up --build -d
 ```
 
 The server will be available at http://localhost:3000
@@ -81,6 +81,8 @@ Run the application:
 ```
 
 ## Credits & Acknowledgments
+
+* **Author & Developer:** Developed and maintained in Rust by **Eduardo Hoffmann do Carmo Silva ([EduHoff](https://github.com/EduHoff))**.
 
 This project is a complete rewrite in Rust, inspired by and building upon the work of the following open-source projects:
 
