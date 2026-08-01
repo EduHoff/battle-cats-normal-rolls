@@ -6,7 +6,7 @@ use battle_cats_normal_rolls::routes::{
     finder::{find_seed_handler, finder_page},
     home::home_page,
 };
-use std::{error::Error, sync::Arc};
+use std::{env, error::Error, sync::Arc};
 use tera::Tera;
 use tower_http::services::ServeDir;
 
@@ -28,8 +28,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_state(app_state)
         .nest_service("/static", ServeDir::new("static"));
 
-    let addr = "127.0.0.1:3000";
-    let listener = tokio::net::TcpListener::bind(addr).await?;
+    let host = env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+    let addr = format!("{}:{}", host, port);
+
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
     println!("Server running on http://{}", addr);
 
     axum::serve(listener, app).await?;
