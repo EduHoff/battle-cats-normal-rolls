@@ -46,8 +46,10 @@
                 <div class="rolls-list" style="margin-top: 20px;">
                     <h3>Your Rolls:</h3>
                     {% for i in range(end=10) %}
-                    <div class="roll-input-group" style="margin-bottom: 8px;">
-                        <label for="roll-{{ loop.index }}">{{ loop.index }}.</label>
+                    <div class="roll-input-group" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <label for="roll-{{ loop.index }}" style="display: inline-block; min-width: 28px; text-align: right;">
+                            {{ loop.index }}.
+                        </label>
                         <select id="roll-{{ loop.index }}" name="rolls">
                             <option value="">-- Select rolled unit --</option>
                             {% for unit in available_units %}
@@ -110,6 +112,7 @@
             </small>
         </p>
     </footer>
-</body>
+
 <script src="/static/js/finder-form.js" defer></script>
+</body>
 </html>
