@@ -30,12 +30,32 @@ To build this project from source, ensure you have the following installed on yo
 
 ---
 
-### Installing via AUR (Arch Linux / Manjaro)
+### Installing via AUR (Arch Linux)
 
 If you are using Arch Linux or an Arch-based distribution, you can install the package directly from the AUR using your favorite helper:
 
 ```bash
 yay -S battle-cats-normal-rolls-git
+```
+
+---
+
+### Running via Docker
+
+If you prefer not to install the Rust toolchain, you can build and run the application using Docker and Docker Compose:
+
+```bash
+git clone https://github.com/EduHoff/battle-cats-normal-rolls.git
+cd battle-cats-normal-rolls
+docker compose up --build
+```
+
+The server will be available at http://localhost:3000
+
+To stop the container:
+
+```bash
+docker compose down
 ```
 
 ---
