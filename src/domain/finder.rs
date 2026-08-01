@@ -1,8 +1,9 @@
 use crate::domain::banner::BannerData;
 use crate::domain::seed::{advance_seed, get_rarity, get_unit};
 use rayon::prelude::*;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct FinderResult {
     pub seed_before: u32,
     pub seed_after: u32,

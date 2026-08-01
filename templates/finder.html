@@ -3,23 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Cats Normal Seed Tracker</title>
+    <title>Seed Finder - Battle Cats Normal Seed Tracker</title>
     <link rel="icon" type="image/png" href="/static/img/normal_cat_ticket.png">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header>
-        <nav class="top-nav">
-            <a href="/" class="active">Seed Tracker</a>
-            <a href="/finder">Seed Finder</a>
-        </nav>
-
         <h1>Battle Cats Normal Seed Tracker</h1>
         <p><small>AGPLv3 Open Source Software | <a href="https://github.com/EduHoff/battle-cats-normal-rolls" target="_blank">[Source Code]</a></small></p>
+
+        <nav class="top-nav">
+            <a href="/">Seed Tracker</a>
+            <a href="/finder" class="active">Seed Finder</a>
+        </nav>
     </header>
 
     <main>
-        <h1>Nothing yet here...</h1>
+        <section class="instructions">
+            <h2>Looking for your seed?</h2>
+            <ul>
+                <li>Roll several normal tickets (preferably 7 to 10 rolls) in game and record the results in order.</li>
+                <li>Select the units you obtained in sequence below.</li>
+                <li>The more rolls you provide, the more accurate and unique the found seed will be.</li>
+                <li>Note that you only need to find your seed once. Afterwards, you can advance your tracks from the main page.</li>
+                <li>Note: Bounty Up = Accounting</li>
+            </ul>
+        </section>
+
+        <section class="finder-form-container">
+            <form method="POST" action="/find">
+                <div class="controls-finder">
+                    <label for="event">Event / Banner:</label>
+                    <select id="event" name="event" onchange="this.form.submit()">
+                        {% for b in banners %}
+                            <option value="{{ b.short_name }}" {% if b.short_name == selected_event %}selected{% endif %}>
+                                {{ b.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="rolls-list" style="margin-top: 20px;">
+                    <h3>Your Rolls:</h3>
+                    {% for i in range(end=10) %}
+                    <div class="roll-input-group" style="margin-bottom: 8px;">
+                        <label for="roll-{{ loop.index }}">{{ loop.index }}.</label>
+                        <select id="roll-{{ loop.index }}" name="rolls">
+                            <option value="">-- Select rolled unit --</option>
+                            {% for unit in available_units %}
+                                <option value="{{ unit }}" {% if selected_rolls[loop.index0] == unit %}selected{% endif %}>
+                                    {{ unit }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" style="margin-top: 20px;">Find Seed</button>
+            </form>
+        </section>
+
+        {% if error %}
+            <div class="error-message" style="color: red; margin-top: 20px;">
+                <p><strong>Error:</strong> {{ error }}</p>
+            </div>
+        {% endif %}
+
+        {% if results %}
+            <section class="finder-results" style="margin-top: 30px;">
+                <h3>Results Found ({{ results | length }}):</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Initial Seed (Before Rolls)</th>
+                            <th>Current Seed (After Rolls)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in results %}
+                        <tr>
+                            <td><code>{{ res.seed_before }}</code></td>
+                            <td><code>{{ res.seed_after }}</code></td>
+                            <td>
+                                <a href="/?seed={{ res.seed_after }}&event={{ selected_event }}">
+                                    Go to Tracker (Seed: {{ res.seed_after }})
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        {% endif %}
     </main>
 
     <footer style="margin-top: 40px; text-align: center;">
@@ -33,6 +110,6 @@
             </small>
         </p>
     </footer>
-
 </body>
+<script src="/static/js/finder-form.js" defer></script>
 </html>
