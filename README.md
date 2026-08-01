@@ -1,6 +1,6 @@
 # Battle Cats Normal Seed Tracker
 
-(no oficial description yet)
+Battle Cats normal seed tracking server with high-performance Rust seeker
 
 ## About This Tool & Important Notes
 
@@ -19,6 +19,46 @@ Clicking on any cell in the table simulates your roll path from the top. Previou
   The *Lucky Ticket G* banner uses a special variant of the 100K XP item with a different internal ID from the standard 100K XP used in other banners.  
   * While there is no difference in-game, this ID distinction prevents it from being used to force track switches across different banners.
   * To distinguish between the two in the tracker, the *Lucky Ticket G*-exclusive version is marked with **(β)**.
+
+## Installation & Building
+
+### Prerequisites
+
+To build this project from source, ensure you have the following installed on your system:
+* [Git](https://git-scm.com/)
+* [Rust & Cargo](https://www.rust-lang.org/) (latest stable release recommended)
+
+---
+
+### Installing via AUR (Arch Linux / Manjaro)
+
+If you are using Arch Linux or an Arch-based distribution, you can install the package directly from the AUR using your favorite helper:
+
+```bash
+yay -S battle-cats-normal-rolls-git
+```
+
+---
+
+### Building from Source
+
+To compile and run the project manually:
+
+```bash
+git clone https://github.com/EduHoff/battle-cats-normal-rolls.git
+cd battle-cats-normal-rolls
+```
+
+Build for production:
+
+```bash
+cargo build --release
+```
+
+Run the application:
+```bash
+./target/release/battle-cats-normal-rolls
+```
 
 ## Credits & Acknowledgments
 
