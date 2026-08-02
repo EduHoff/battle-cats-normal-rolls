@@ -1,8 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const table = document.getElementById("tracker-table");
-    if (!table) return;
+    const container = document.querySelector(".tracker-container");
+    if (!container) return;
 
-    table.addEventListener("click", (e) => {
+    const tableA = container.querySelector(".track-a-table");
+    const tableB = container.querySelector(".track-b-table");
+
+    if (!tableA || !tableB) return;
+
+    container.addEventListener("click", (e) => {
         if (e.target.tagName === 'A') return;
 
         const targetCell = e.target.closest("td.pick");
@@ -10,24 +15,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const isLastPicked = targetCell.classList.contains("last-picked");
 
-        table.querySelectorAll(".picked, .next_position, .last-picked").forEach(el => {
+        container.querySelectorAll(".picked, .next_position, .last-picked").forEach(el => {
             el.classList.remove("picked", "next_position", "last-picked");
         });
 
-        if (isLastPicked) {
-            return;
-        }
+        if (isLastPicked) return;
 
-        const rows = Array.from(table.querySelectorAll("tbody tr"));
+        const rowsA = Array.from(tableA.querySelectorAll("tbody tr:not(.dummy-row)"));
+        const rowsB = Array.from(tableB.querySelectorAll("tbody tr:not(.dummy-row)"));
+
+        const totalSteps = Math.min(rowsA.length, rowsB.length);
         const clickedBottomCell = e.target.closest("td.bottom-cell");
 
         let currentTrack = 'A';
         let pathFound = false;
 
-        for (let r = 0; r < rows.length; r++) {
-            const row = rows[r];
-            const cellInPath = getCellForTrack(row, currentTrack);
-
+        for (let i = 0; i < totalSteps; i++) {
+            const cellInPath = getCellForStep(i, currentTrack, rowsA, rowsB);
             if (!cellInPath) continue;
 
             cellInPath.classList.add("picked");
@@ -44,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     currentTrack = currentTrack === 'A' ? 'B' : 'A';
                 }
 
-                highlightNextPosition(rows, r + 1, currentTrack);
+                highlightNextPosition(i + 1, currentTrack, rowsA, rowsB);
                 break;
             }
 
@@ -54,11 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!pathFound) {
-            table.querySelectorAll(".picked, .last-picked").forEach(el => el.classList.remove("picked", "last-picked"));
+            container.querySelectorAll(".picked, .last-picked").forEach(el => el.classList.remove("picked", "last-picked"));
 
-            const targetRowIdx = rows.indexOf(targetCell.parentElement);
-            const allCells = Array.from(targetCell.parentElement.cells);
-            let isolatedTrack = allCells.indexOf(targetCell) < Math.floor(allCells.length / 2) ? 'A' : 'B';
+            let isolatedTrack = tableA.contains(targetCell) ? 'A' : 'B';
+
+            let stepIndex = -1;
+            if (isolatedTrack === 'A') {
+                stepIndex = rowsA.findIndex(tr => tr.contains(targetCell));
+            } else {
+                stepIndex = rowsB.findIndex(tr => tr.contains(targetCell));
+            }
 
             targetCell.classList.add("picked", "last-picked");
 
@@ -70,25 +79,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 isolatedTrack = isolatedTrack === 'A' ? 'B' : 'A';
             }
 
-            highlightNextPosition(rows, targetRowIdx + 1, isolatedTrack);
+            if (stepIndex !== -1) {
+                highlightNextPosition(stepIndex + 1, isolatedTrack, rowsA, rowsB);
+            }
         }
     });
 
-    function getCellForTrack(row, track) {
-        const cells = Array.from(row.querySelectorAll("td.pick"));
-        return track === 'A' ? cells[0] : (cells[1] || cells[0]);
+    function getCellForStep(stepIndex, track, rowsA, rowsB) {
+        const targetRow = track === 'A' ? rowsA[stepIndex] : rowsB[stepIndex];
+        return targetRow ? targetRow.querySelector("td.pick") : null;
     }
 
     function hasTrackSwitch(element) {
         return element.textContent.includes("->");
     }
 
-    function highlightNextPosition(rows, startRowIdx, track) {
-        if (startRowIdx < rows.length) {
-            const targetCell = getCellForTrack(rows[startRowIdx], track);
-            if (targetCell) {
-                targetCell.classList.add("next_position");
-            }
+    function highlightNextPosition(nextStepIndex, track, rowsA, rowsB) {
+        const targetCell = getCellForStep(nextStepIndex, track, rowsA, rowsB);
+        if (targetCell) {
+            targetCell.classList.add("next_position");
         }
     }
 });

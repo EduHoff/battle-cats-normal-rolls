@@ -63,78 +63,8 @@
             </form>
         </section>
 
-        <!-- Tracker Table -->
-        <table class="tracker-table" id="tracker-table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Result</th>
-                    <th>Alt. result</th>
-                    <th>Alt. No.</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                <tr>
-                    <!-- Track A No. -->
-                    <td>
-                        <a href="/?seed={{ row.track_a_seed }}&count={{ count }}&event={{ selected_event }}">
-                            {{ loop.index }}A
-                        </a>
-                    </td>
+        {% include "tracker.html" %}
 
-                    <!-- Result Track A -->
-                    <td class="top-cell pick rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}">
-                        <a href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
-                            {{ row.cell_a.name }}
-                        </a>
-
-                        {% if row.cell_a.dupe_name is defined and row.cell_a.dupe_name %}
-                            <div class="reroll-info">
-                                <small>
-                                    {% if row.cell_a.dupe_seed is defined and row.cell_a.dupe_seed %}
-                                        <a href="/?seed={{ row.cell_a.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
-                                            {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}
-                                        </a>
-                                    {% else %}
-                                        {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}
-                                    {% endif %}
-                                </small>
-                            </div>
-                        {% endif %}
-                    </td>
-
-                    <!-- Alt Result Track B -->
-                    <td class="top-cell pick rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}">
-                        <a href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
-                            {{ row.cell_b.name }}
-                        </a>
-
-                        {% if row.cell_b.dupe_name is defined and row.cell_b.dupe_name %}
-                            <div class="reroll-info">
-                                <small>
-                                    {% if row.cell_b.dupe_seed is defined and row.cell_b.dupe_seed %}
-                                        <a href="/?seed={{ row.cell_b.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
-                                            &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}
-                                        </a>
-                                    {% else %}
-                                        &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}
-                                    {% endif %}
-                                </small>
-                            </div>
-                        {% endif %}
-                    </td>
-
-                    <!-- Track B No. -->
-                    <td>
-                        <a href="/?seed={{ row.track_b_seed }}&count={{ count }}&event={{ selected_event }}">
-                            {{ loop.index }}B
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </main>
 
     {% include "footer.html" %}

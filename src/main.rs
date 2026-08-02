@@ -19,6 +19,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         ("templates/finder.html", Some("finder.html")),
         ("templates/header.html", Some("header.html")),
         ("templates/footer.html", Some("footer.html")),
+        ("templates/tracker.html", Some("tracker.html")),
     ])?;
 
     let app_state = Arc::new(tera);
