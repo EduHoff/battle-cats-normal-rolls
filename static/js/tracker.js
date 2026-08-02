@@ -8,9 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const targetCell = e.target.closest("td.pick");
         if (!targetCell) return;
 
-        table.querySelectorAll(".picked, .next_position").forEach(el => {
-            el.classList.remove("picked", "next_position");
+        const isLastPicked = targetCell.classList.contains("last-picked");
+
+        table.querySelectorAll(".picked, .next_position, .last-picked").forEach(el => {
+            el.classList.remove("picked", "next_position", "last-picked");
         });
+
+        if (isLastPicked) {
+            return;
+        }
 
         const rows = Array.from(table.querySelectorAll("tbody tr"));
         const clickedBottomCell = e.target.closest("td.bottom-cell");
@@ -28,8 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (cellInPath === targetCell) {
                 pathFound = true;
+                targetCell.classList.add("last-picked");
 
-                const isSwitchTriggered = clickedBottomCell 
+                const isSwitchTriggered = clickedBottomCell
                     ? hasTrackSwitch(clickedBottomCell)
                     : (!targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell));
 
@@ -47,15 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!pathFound) {
-            table.querySelectorAll(".picked").forEach(el => el.classList.remove("picked"));
+            table.querySelectorAll(".picked, .last-picked").forEach(el => el.classList.remove("picked", "last-picked"));
 
             const targetRowIdx = rows.indexOf(targetCell.parentElement);
             const allCells = Array.from(targetCell.parentElement.cells);
             let isolatedTrack = allCells.indexOf(targetCell) < Math.floor(allCells.length / 2) ? 'A' : 'B';
 
-            targetCell.classList.add("picked");
+            targetCell.classList.add("picked", "last-picked");
 
-            const isSwitchTriggered = clickedBottomCell 
+            const isSwitchTriggered = clickedBottomCell
                 ? hasTrackSwitch(clickedBottomCell)
                 : (!targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell));
 

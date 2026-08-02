@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         else if (savedUrl) {
-            console.log('Restaurando última seed:', savedUrl);
             window.location.href = savedUrl;
         }
     }
