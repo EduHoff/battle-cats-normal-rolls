@@ -32,10 +32,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let host = env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
     let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
-    let addr = format!("{}:{}", host, port);
+    let addr = format!("{host}:{port}");
 
     let listener = tokio::net::TcpListener::bind(&addr).await?;
-    println!("Server running on http://{}", addr);
+    println!("Server running on http://{addr}");
 
     axum::serve(listener, app).await?;
 

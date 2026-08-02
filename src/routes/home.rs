@@ -36,7 +36,11 @@ pub async fn home_page(
     let selected_banner = all_banners
         .iter()
         .find(|b| b.short_name == current_event)
-        .unwrap_or(&all_banners[0]);
+        .unwrap_or_else(|| {
+            all_banners
+                .first()
+                .expect("all_banners list cannot be empty")
+        });
 
     let mut available_units: Vec<String> = selected_banner
         .pools

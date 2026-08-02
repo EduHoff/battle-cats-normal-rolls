@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::domain::banner::BannerData;
 
-pub fn advance_seed(mut seed: u32) -> u32 {
+pub const fn advance_seed(mut seed: u32) -> u32 {
     seed ^= seed << 13;
     seed ^= seed >> 17;
     seed ^= seed << 15;
@@ -62,7 +62,11 @@ pub fn get_unit(seed: u32, units: &[String], removed_indices: &[usize]) -> (usiz
 
     let num_units_in_pool = units.len().saturating_sub(removed_indices.len());
     if num_units_in_pool == 0 {
-        return (0, units[0].clone());
+        let fallback_unit = units
+            .first()
+            .expect("units vector must contain at least one unit")
+            .clone();
+        return (0, fallback_unit);
     }
 
     let seed_mod = (seed as usize) % num_units_in_pool;
@@ -77,7 +81,12 @@ pub fn get_unit(seed: u32, units: &[String], removed_indices: &[usize]) -> (usiz
         }
     }
 
-    (real_idx, units[real_idx].clone())
+    let unit = units
+        .get(real_idx)
+        .expect("real_idx calculated must be within units bounds")
+        .clone();
+
+    (real_idx, unit)
 }
 
 pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> Vec<Roll> {
@@ -90,7 +99,11 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
 
         seed = advance_seed(seed);
         let unit_seed = seed;
-        let pool = &banner.pools[rarity];
+        let pool = banner
+            .pools
+            .get(rarity)
+            .expect("rarity index must be valid for banner pools");
+
         let (unit_id, unit_name) = get_unit(unit_seed, &pool.units, &[]);
 
         let unit_if_distinct = UnitRoll {
@@ -130,66 +143,99 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
 }
 
 pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) -> Vec<Row> {
-    let rolls_a = generate_rolls(initial_seed, count, banner);
+    let track_a_rolls = generate_rolls(initial_seed, count, banner);
 
     let b_initial_seed = advance_seed(initial_seed);
-    let rolls_b = generate_rolls(b_initial_seed, count, banner);
+    let track_b_rolls = generate_rolls(b_initial_seed, count, banner);
 
     let mut rows = Vec::with_capacity(count);
 
     for i in 0..count {
-        let roll_a = &rolls_a[i];
-        let roll_b = &rolls_b[i];
+        let roll_a = track_a_rolls
+            .get(i)
+            .expect("i must be within track_a_rolls bounds");
+
+        let roll_b = track_b_rolls
+            .get(i)
+            .expect("i must be within track_b_rolls bounds");
 
         let is_utility_a = BannerData::is_utility(&roll_a.unit_if_distinct.unit_name);
         let is_utility_b = BannerData::is_utility(&roll_b.unit_if_distinct.unit_name);
 
-        let (dupe_name_a, dupe_seed_a, dupe_target_a) = if i > 0
-            && rolls_a[i].unit_if_distinct.unit_name == rolls_a[i - 1].unit_if_distinct.unit_name
-            && rolls_a[i].unit_if_dupe.is_some()
-        {
-            let target_seed = if i + 1 < count {
-                rolls_b[i + 1].unit_if_distinct.unit_seed
+        let (dupe_name_a, dupe_seed_a, dupe_target_a) = if i > 0 {
+            let curr_a = track_a_rolls
+                .get(i)
+                .expect("index i out of bounds for track_a_rolls");
+
+            let prev_a = track_a_rolls
+                .get(i - 1)
+                .expect("index i - 1 out of bounds for track_a_rolls");
+
+            if curr_a.unit_if_distinct.unit_name == prev_a.unit_if_distinct.unit_name
+                && curr_a.unit_if_dupe.is_some()
+            {
+                let target_seed = if i + 1 < count {
+                    track_b_rolls
+                        .get(i + 1)
+                        .expect("index i + 1 out of bounds for track_b_rolls")
+                        .unit_if_distinct
+                        .unit_seed
+                } else {
+                    roll_a.unit_if_distinct.unit_seed
+                };
+
+                let alt_name = roll_a.unit_if_dupe.as_ref().map_or_else(
+                    || roll_a.unit_if_distinct.unit_name.clone(),
+                    |d| d.unit_name.clone(),
+                );
+
+                (
+                    Some(alt_name),
+                    Some(target_seed),
+                    Some(format!("{}B", i + 2)),
+                )
             } else {
-                roll_a.unit_if_distinct.unit_seed
-            };
-
-            let alt_name = roll_a
-                .unit_if_dupe
-                .as_ref()
-                .map(|d| d.unit_name.clone())
-                .unwrap_or_else(|| roll_a.unit_if_distinct.unit_name.clone());
-
-            (
-                Some(alt_name),
-                Some(target_seed),
-                Some(format!("{}B", i + 2)),
-            )
+                (None, None, None)
+            }
         } else {
             (None, None, None)
         };
 
-        let (dupe_name_b, dupe_seed_b, dupe_target_b) = if i > 0
-            && rolls_b[i].unit_if_distinct.unit_name == rolls_b[i - 1].unit_if_distinct.unit_name
-            && rolls_b[i].unit_if_dupe.is_some()
-        {
-            let target_seed = if i + 1 < count {
-                rolls_a[i + 1].unit_if_distinct.unit_seed
+        let (dupe_name_b, dupe_seed_b, dupe_target_b) = if i > 0 {
+            let curr_b = track_b_rolls
+                .get(i)
+                .expect("index i out of bounds for track_b_rolls");
+
+            let prev_b = track_b_rolls
+                .get(i - 1)
+                .expect("index i - 1 out of bounds for track_b_rolls");
+
+            if curr_b.unit_if_distinct.unit_name == prev_b.unit_if_distinct.unit_name
+                && curr_b.unit_if_dupe.is_some()
+            {
+                let target_seed = if i + 1 < count {
+                    track_a_rolls
+                        .get(i + 1)
+                        .expect("index i + 1 out of bounds for track_a_rolls")
+                        .unit_if_distinct
+                        .unit_seed
+                } else {
+                    roll_b.unit_if_distinct.unit_seed
+                };
+
+                let alt_name = roll_b.unit_if_dupe.as_ref().map_or_else(
+                    || roll_b.unit_if_distinct.unit_name.clone(),
+                    |d| d.unit_name.clone(),
+                );
+
+                (
+                    Some(alt_name),
+                    Some(target_seed),
+                    Some(format!("{}A", i + 3)),
+                )
             } else {
-                roll_b.unit_if_distinct.unit_seed
-            };
-
-            let alt_name = roll_b
-                .unit_if_dupe
-                .as_ref()
-                .map(|d| d.unit_name.clone())
-                .unwrap_or_else(|| roll_b.unit_if_distinct.unit_name.clone());
-
-            (
-                Some(alt_name),
-                Some(target_seed),
-                Some(format!("{}A", i + 3)),
-            )
+                (None, None, None)
+            }
         } else {
             (None, None, None)
         };

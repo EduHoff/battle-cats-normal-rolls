@@ -11,7 +11,11 @@ use crate::domain::finder::find_seeds;
 
 pub async fn finder_page(State(tera): State<Arc<Tera>>) -> impl IntoResponse {
     let banners = BannerData::all_banners();
-    let default_banner = &banners[0];
+
+    let default_banner = banners
+        .first()
+        .expect("at least one banner must be available");
+
     let available_units = default_banner.all_units();
 
     let mut context = Context::new();
@@ -25,7 +29,7 @@ pub async fn finder_page(State(tera): State<Arc<Tera>>) -> impl IntoResponse {
         Ok(html) => Html(html).into_response(),
         Err(err) => (
             axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Template error: {}", err),
+            format!("Template error: {err}"),
         )
             .into_response(),
     }
@@ -47,12 +51,14 @@ pub async fn find_seed_handler(
     }
 
     let banners = BannerData::all_banners();
-    let event_name = selected_event.unwrap_or_else(|| banners[0].short_name.clone());
+    let default_banner = banners.first().expect("banners list cannot be empty");
+
+    let event_name = selected_event.unwrap_or_else(|| default_banner.short_name.clone());
 
     let banner = banners
         .iter()
         .find(|b| b.short_name == event_name)
-        .unwrap_or(&banners[0]);
+        .unwrap_or(default_banner);
 
     let available_units = banner.all_units();
 
@@ -83,7 +89,7 @@ pub async fn find_seed_handler(
         Ok(html) => Html(html).into_response(),
         Err(err) => (
             axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Template error: {}", err),
+            format!("Template error: {err}"),
         )
             .into_response(),
     }

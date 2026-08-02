@@ -41,7 +41,10 @@ fn check_seed_matches(initial_seed: u32, user_rolls: &[String], banner: &BannerD
     for user_roll in user_rolls {
         current_seed = advance_seed(current_seed);
         let rarity = get_rarity(current_seed, &banner.rate_cum_sum);
-        let pool = &banner.pools[rarity];
+        let pool = banner
+            .pools
+            .get(rarity)
+            .expect("rarity index must be valid for banner pools");
 
         current_seed = advance_seed(current_seed);
         let (unit_id, unit_name) = get_unit(current_seed, &pool.units, &[]);
@@ -77,7 +80,10 @@ fn calculate_seed_after(initial_seed: u32, num_pulls: usize, banner: &BannerData
     for _ in 0..num_pulls {
         current_seed = advance_seed(current_seed);
         let rarity = get_rarity(current_seed, &banner.rate_cum_sum);
-        let pool = &banner.pools[rarity];
+        let pool = banner
+            .pools
+            .get(rarity)
+            .expect("rarity index must be valid for banner pools");
 
         current_seed = advance_seed(current_seed);
         let (unit_id, unit_name) = get_unit(current_seed, &pool.units, &[]);
@@ -101,7 +107,10 @@ fn calculate_seed_after(initial_seed: u32, num_pulls: usize, banner: &BannerData
 
     let peek_seed = advance_seed(current_seed);
     let peek_rarity = get_rarity(peek_seed, &banner.rate_cum_sum);
-    let peek_pool = &banner.pools[peek_rarity];
+    let peek_pool = banner
+        .pools
+        .get(peek_rarity)
+        .expect("peek_rarity index must be valid for banner pools");
 
     let peek_unit_seed = advance_seed(peek_seed);
     let (_peek_id, peek_unit_name) = get_unit(peek_unit_seed, &peek_pool.units, &[]);
@@ -118,7 +127,7 @@ mod tests {
     use crate::domain::seed::generate_rolls;
 
     #[test]
-    #[ignore]
+    #[ignore = "expensive test that searches seeds and takes significant time to complete"]
     fn test_finder_roundtrip() {
         let banner = BannerData::normal_banner();
         let original_seed: u32 = 123_456_789;
@@ -131,7 +140,11 @@ mod tests {
 
         for roll in generated_rolls {
             let name = if Some(&roll.unit_if_distinct.unit_name) == last_name.as_ref() {
-                roll.unit_if_dupe.unwrap().unit_name
+                if let Some(dupe) = roll.unit_if_dupe {
+                    dupe.unit_name
+                } else {
+                    roll.unit_if_distinct.unit_name
+                }
             } else {
                 roll.unit_if_distinct.unit_name
             };
