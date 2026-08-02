@@ -11,57 +11,42 @@
     {% include "header.html" %}
 
     <main>
-        <section>
-            <form method="GET" action="/">
-                <div class="controls">
-                    <label for="seed">Seed:</label>
-                    <input
-                        type="number"
-                        id="seed"
-                        name="seed"
-                        value="{{ seed | default(value='1') }}"
-                        required
-                    >
-
-                    <label for="count">Count:</label>
-                    <input
-                        type="number"
-                        id="count"
-                        name="count"
-                        min="1"
-                        max="1000"
-                        value="{{ count | default(value='100') }}"
-                    >
-
-                    <label for="event">Event / Banner:</label>
-                    <select id="event" name="event">
-                        {% for b in banners %}
-                            <option
-                                value="{{ b.short_name }}"
-                                {% if b.short_name == selected_event %}selected{% endif %}
-                            >
-                                {{ b.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-
-                    <label for="find-next">Find next:</label>
-                    <select id="find-next" name="find">
-                        <option value=""></option>
-                        {% for unit in available_units %}
-                            <option
-                                value="{{ unit }}"
-                                {% if unit == selected_find %}selected{% endif %}
-                            >
-                                {{ unit }}
-                            </option>
-                        {% endfor %}
-                    </select>
-
-                    <button type="submit">Update</button>
-                </div>
-            </form>
-        </section>
+        <div class="controls">
+            <div class="control-group">
+                <label for="seed">Seed:</label>
+                <input type="number" id="seed" name="seed" value="{{ seed | default(value='1') }}" required>
+            </div>
+        
+            <div class="control-group">
+                <label for="count">Count:</label>
+                <input type="number" id="count" name="count" min="1" max="1000" value="{{ count | default(value='100') }}">
+            </div>
+        
+            <div class="control-group">
+                <label for="event">Event / Banner:</label>
+                <select id="event" name="event">
+                    {% for b in banners %}
+                        <option value="{{ b.short_name }}" {% if b.short_name == selected_event %}selected{% endif %}>
+                            {{ b.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="control-group">
+                <label for="find-next">Find next:</label>
+                <select id="find-next" name="find">
+                    <option value=""></option>
+                    {% for unit in available_units %}
+                        <option value="{{ unit }}" {% if unit == selected_find %}selected{% endif %}>
+                            {{ unit }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <button type="submit">Update</button>
+        </div>
 
         {% include "tracker.html" %}
 

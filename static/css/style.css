@@ -477,15 +477,23 @@
    align-items: center;
    display: flex;
    flex-wrap: wrap;
-   gap: 10px;
+   gap: 12px;
+   justify-content: center;
    margin-bottom: 20px;
  }
-
- .controls label {
-   font-weight: 600;
-   margin-left: 5px;
+ 
+ .control-group {
+   align-items: center;
+   display: inline-flex;
+   gap: 6px;
  }
-
+ 
+ .control-group label {
+   font-weight: 600;
+   margin: 0;
+   page-break-before: avoid;
+ }
+ 
  .controls select,
  .controls input {
    margin-bottom: 0;
