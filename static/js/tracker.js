@@ -4,12 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tableA = container.querySelector(".track-a-table");
     const tableB = container.querySelector(".track-b-table");
-
     if (!tableA || !tableB) return;
 
     container.addEventListener("click", (e) => {
-        if (e.target.tagName === "A") return;
-
         const targetCell = e.target.closest("td.pick");
         if (!targetCell) return;
 
@@ -23,12 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const rowsA = Array.from(tableA.querySelectorAll("tbody tr:not(.dummy-row)"));
         const rowsB = Array.from(tableB.querySelectorAll("tbody tr:not(.dummy-row)"));
-
         const totalSteps = Math.min(rowsA.length, rowsB.length);
-        const clickedBottomCell = e.target.closest("td.bottom-cell");
 
         let currentTrack = "A";
         let pathFound = false;
+        let lastItemName = null;
 
         for (let i = 0; i < totalSteps; i++) {
             const cellInPath = getCellForStep(i, currentTrack, rowsA, rowsB);
@@ -36,15 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             cellInPath.classList.add("picked");
 
+            const mainItemElem = cellInPath.querySelector(".track-link-direct");
+            const switchElem = cellInPath.querySelector(".track-link-switch");
+
+            const mainItemName = mainItemElem ? mainItemElem.textContent.trim() : "";
+            const hasDuplicateReroll = switchElem !== null;
+
             if (cellInPath === targetCell) {
                 pathFound = true;
                 targetCell.classList.add("last-picked");
 
-                const isSwitchTriggered = clickedBottomCell
-                    ? hasTrackSwitch(clickedBottomCell)
-                    : !targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell);
+                const clickedOnSwitch = e.target.closest(".track-link-switch") !== null;
 
-                if (isSwitchTriggered) {
+                if (clickedOnSwitch || (hasDuplicateReroll && lastItemName === mainItemName)) {
                     currentTrack = currentTrack === "A" ? "B" : "A";
                 }
 
@@ -52,8 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 break;
             }
 
-            if (hasTrackSwitch(cellInPath)) {
+            if (hasDuplicateReroll && lastItemName === mainItemName) {
                 currentTrack = currentTrack === "A" ? "B" : "A";
+                lastItemName = switchElem ? switchElem.textContent.replace(/->|<-|\d+[AB]/g, "").trim() : "";
+            } else {
+                lastItemName = mainItemName;
             }
         }
 
@@ -64,20 +67,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let isolatedTrack = tableA.contains(targetCell) ? "A" : "B";
 
-            let stepIndex = -1;
-            if (isolatedTrack === "A") {
-                stepIndex = rowsA.findIndex((tr) => tr.contains(targetCell));
-            } else {
-                stepIndex = rowsB.findIndex((tr) => tr.contains(targetCell));
-            }
+            const stepIndex =
+                isolatedTrack === "A"
+                    ? rowsA.findIndex((tr) => tr.contains(targetCell))
+                    : rowsB.findIndex((tr) => tr.contains(targetCell));
 
             targetCell.classList.add("picked", "last-picked");
 
-            const isSwitchTriggered = clickedBottomCell
-                ? hasTrackSwitch(clickedBottomCell)
-                : !targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell);
-
-            if (isSwitchTriggered) {
+            const clickedOnSwitch = e.target.closest(".track-link-switch") !== null;
+            if (clickedOnSwitch) {
                 isolatedTrack = isolatedTrack === "A" ? "B" : "A";
             }
 
@@ -90,11 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function getCellForStep(stepIndex, track, rowsA, rowsB) {
         const targetRow = track === "A" ? rowsA[stepIndex] : rowsB[stepIndex];
         return targetRow ? targetRow.querySelector("td.pick") : null;
-    }
-
-    function hasTrackSwitch(element) {
-        const text = element.textContent;
-        return text.includes("->") || text.includes("<-");
     }
 
     function highlightNextPosition(nextStepIndex, track, rowsA, rowsB) {

@@ -21,7 +21,7 @@
                 <td
                     class="top-cell pick rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}"
                 >
-                    <a href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
+                    <a class="track-link-direct" href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
                         {{ row.cell_a.name }}
                     </a>
 
@@ -29,10 +29,12 @@
                     <div class="reroll-info">
                         <small>
                             {% if row.cell_a.dupe_seed is defined and row.cell_a.dupe_seed %}
-                            <a href="/?seed={{ row.cell_a.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
+                            <a class="track-link-switch" href="/?seed={{ row.cell_a.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
                                 {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}
                             </a>
-                            {% else %} {{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }} {% endif %}
+                            {% else %} 
+                            <span class="track-link-switch">{{ row.cell_a.dupe_name }} -&gt; {{ row.cell_a.dupe_target_no }}</span>
+                            {% endif %}
                         </small>
                     </div>
                     {% endif %}
@@ -65,7 +67,7 @@
                 <td
                     class="top-cell pick rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}"
                 >
-                    <a href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
+                    <a class="track-link-direct" href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
                         {{ row.cell_b.name }}
                     </a>
 
@@ -73,10 +75,12 @@
                     <div class="reroll-info">
                         <small>
                             {% if row.cell_b.dupe_seed is defined and row.cell_b.dupe_seed %}
-                            <a href="/?seed={{ row.cell_b.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
+                            <a class="track-link-switch" href="/?seed={{ row.cell_b.dupe_seed }}&count={{ count }}&event={{ selected_event }}">
                                 &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}
                             </a>
-                            {% else %} &lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }} {% endif %}
+                            {% else %}
+                            <span class="track-link-switch">&lt;- {{ row.cell_b.dupe_target_no }} {{ row.cell_b.dupe_name }}</span>
+                            {% endif %}
                         </small>
                     </div>
                     {% endif %}
