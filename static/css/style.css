@@ -716,6 +716,7 @@ td.pick {
     padding: 4px 8px;
     text-align: center;
     vertical-align: middle;
+    height: 54px;
 }
 
 .tracker-table th {
@@ -772,7 +773,7 @@ td.bottom-cell {
     background-color: #ffffff !important;
     border-bottom: 1px solid #777 !important;
     font-size: 0 !important;
-    height: 18px !important;
+    height: 27px !important;
     line-height: 0 !important;
     padding: 0 !important;
 }

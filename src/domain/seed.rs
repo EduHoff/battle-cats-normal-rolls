@@ -231,7 +231,7 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
                 (
                     Some(alt_name),
                     Some(target_seed),
-                    Some(format!("{}A", i + 3)),
+                    Some(format!("{}A", i + 2)),
                 )
             } else {
                 (None, None, None)

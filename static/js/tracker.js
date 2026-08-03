@@ -93,7 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function hasTrackSwitch(element) {
-        return element.textContent.includes("->");
+        const text = element.textContent;
+        return text.includes("->") || text.includes("<-");
     }
 
     function highlightNextPosition(nextStepIndex, track, rowsA, rowsB) {

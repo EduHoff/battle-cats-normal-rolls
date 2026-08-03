@@ -11,12 +11,12 @@
         {% include "header.html" %}
 
         <main>
-            <div class="controls">
+            <form class="controls" method="GET" action="/">
                 <div class="control-group">
                     <label for="seed">Seed:</label>
                     <input type="number" id="seed" name="seed" value="{{ seed | default(value='1') }}" required />
                 </div>
-
+            
                 <div class="control-group">
                     <label for="count">Count:</label>
                     <input
@@ -28,7 +28,7 @@
                         value="{{ count | default(value='100') }}"
                     />
                 </div>
-
+            
                 <div class="control-group">
                     <label for="event">Event / Banner:</label>
                     <select id="event" name="event">
@@ -39,7 +39,7 @@
                         {% endfor %}
                     </select>
                 </div>
-
+            
                 <div class="control-group">
                     <label for="find-next">Find next:</label>
                     <select id="find-next" name="find">
@@ -51,9 +51,9 @@
                         {% endfor %}
                     </select>
                 </div>
-
+            
                 <button type="submit">Update</button>
-            </div>
+            </form>
 
             {% include "tracker.html" %}
         </main>
