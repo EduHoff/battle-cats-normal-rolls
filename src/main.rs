@@ -12,6 +12,8 @@ use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    dotenvy::dotenv().ok();
+
     let mut tera = Tera::new();
 
     tera.add_template_files(vec![
