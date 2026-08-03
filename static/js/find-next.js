@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!findSelect || !trackerContainer) return;
 
     function highlightSelectedUnit(unitName) {
-        trackerContainer.querySelectorAll(".highlight-find").forEach(cell => {
+        trackerContainer.querySelectorAll(".highlight-find").forEach((cell) => {
             cell.classList.remove("highlight-find");
         });
 
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const pickCells = trackerContainer.querySelectorAll("td.pick");
 
-        pickCells.forEach(cell => {
+        pickCells.forEach((cell) => {
             const mainLink = cell.querySelector("a");
 
             if (mainLink) {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateQueryParamInLinks(param, value) {
         const links = trackerContainer.querySelectorAll("a");
-        links.forEach(a => {
+        links.forEach((a) => {
             try {
                 const url = new URL(a.href);
                 if (value) {

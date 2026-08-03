@@ -1,61 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Cats Normal Seed Tracker</title>
-    <link rel="icon" type="image/png" href="/static/img/normal_cat_ticket.png">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    {% include "header.html" %}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Normal Seed Tracker</title>
+        <link rel="icon" type="image/png" href="/static/img/normal-cat-ticket.png" />
+        <link rel="stylesheet" href="/static/css/style.css" />
+    </head>
+    <body>
+        {% include "header.html" %}
 
-    <main>
-        <div class="controls">
-            <div class="control-group">
-                <label for="seed">Seed:</label>
-                <input type="number" id="seed" name="seed" value="{{ seed | default(value='1') }}" required>
+        <main>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="seed">Seed:</label>
+                    <input type="number" id="seed" name="seed" value="{{ seed | default(value='1') }}" required />
+                </div>
+
+                <div class="control-group">
+                    <label for="count">Count:</label>
+                    <input
+                        type="number"
+                        id="count"
+                        name="count"
+                        min="1"
+                        max="1000"
+                        value="{{ count | default(value='100') }}"
+                    />
+                </div>
+
+                <div class="control-group">
+                    <label for="event">Event / Banner:</label>
+                    <select id="event" name="event">
+                        {% for b in banners %}
+                            <option value="{{ b.short_name }}" {% if b.short_name == selected_event %}selected{% endif %}>
+                                {{ b.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="find-next">Find next:</label>
+                    <select id="find-next" name="find">
+                        <option value=""></option>
+                        {% for unit in available_units %}
+                            <option value="{{ unit }}" {% if unit == selected_find %}selected{% endif %}>
+                                {{ unit }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit">Update</button>
             </div>
-        
-            <div class="control-group">
-                <label for="count">Count:</label>
-                <input type="number" id="count" name="count" min="1" max="1000" value="{{ count | default(value='100') }}">
-            </div>
-        
-            <div class="control-group">
-                <label for="event">Event / Banner:</label>
-                <select id="event" name="event">
-                    {% for b in banners %}
-                        <option value="{{ b.short_name }}" {% if b.short_name == selected_event %}selected{% endif %}>
-                            {{ b.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        
-            <div class="control-group">
-                <label for="find-next">Find next:</label>
-                <select id="find-next" name="find">
-                    <option value=""></option>
-                    {% for unit in available_units %}
-                        <option value="{{ unit }}" {% if unit == selected_find %}selected{% endif %}>
-                            {{ unit }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        
-            <button type="submit">Update</button>
-        </div>
 
-        {% include "tracker.html" %}
+            {% include "tracker.html" %}
+        </main>
 
-    </main>
+        {% include "footer.html" %}
 
-    {% include "footer.html" %}
-
-<script src="/static/js/tracker.js"></script>
-<script src="/static/js/find-next.js"></script>
-<script src="/static/js/seed-storage.js"></script>
-</body>
+        <script src="/static/js/tracker.js"></script>
+        <script src="/static/js/find-next.js"></script>
+        <script src="/static/js/seed-storage.js"></script>
+    </body>
 </html>

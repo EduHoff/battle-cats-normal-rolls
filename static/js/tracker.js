@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tableA || !tableB) return;
 
     container.addEventListener("click", (e) => {
-        if (e.target.tagName === 'A') return;
+        if (e.target.tagName === "A") return;
 
         const targetCell = e.target.closest("td.pick");
         if (!targetCell) return;
 
         const isLastPicked = targetCell.classList.contains("last-picked");
 
-        container.querySelectorAll(".picked, .next_position, .last-picked").forEach(el => {
+        container.querySelectorAll(".picked, .next_position, .last-picked").forEach((el) => {
             el.classList.remove("picked", "next_position", "last-picked");
         });
 
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalSteps = Math.min(rowsA.length, rowsB.length);
         const clickedBottomCell = e.target.closest("td.bottom-cell");
 
-        let currentTrack = 'A';
+        let currentTrack = "A";
         let pathFound = false;
 
         for (let i = 0; i < totalSteps; i++) {
@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const isSwitchTriggered = clickedBottomCell
                     ? hasTrackSwitch(clickedBottomCell)
-                    : (!targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell));
+                    : !targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell);
 
                 if (isSwitchTriggered) {
-                    currentTrack = currentTrack === 'A' ? 'B' : 'A';
+                    currentTrack = currentTrack === "A" ? "B" : "A";
                 }
 
                 highlightNextPosition(i + 1, currentTrack, rowsA, rowsB);
@@ -53,30 +53,32 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (hasTrackSwitch(cellInPath)) {
-                currentTrack = currentTrack === 'A' ? 'B' : 'A';
+                currentTrack = currentTrack === "A" ? "B" : "A";
             }
         }
 
         if (!pathFound) {
-            container.querySelectorAll(".picked, .last-picked").forEach(el => el.classList.remove("picked", "last-picked"));
+            container
+                .querySelectorAll(".picked, .last-picked")
+                .forEach((el) => el.classList.remove("picked", "last-picked"));
 
-            let isolatedTrack = tableA.contains(targetCell) ? 'A' : 'B';
+            let isolatedTrack = tableA.contains(targetCell) ? "A" : "B";
 
             let stepIndex = -1;
-            if (isolatedTrack === 'A') {
-                stepIndex = rowsA.findIndex(tr => tr.contains(targetCell));
+            if (isolatedTrack === "A") {
+                stepIndex = rowsA.findIndex((tr) => tr.contains(targetCell));
             } else {
-                stepIndex = rowsB.findIndex(tr => tr.contains(targetCell));
+                stepIndex = rowsB.findIndex((tr) => tr.contains(targetCell));
             }
 
             targetCell.classList.add("picked", "last-picked");
 
             const isSwitchTriggered = clickedBottomCell
                 ? hasTrackSwitch(clickedBottomCell)
-                : (!targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell));
+                : !targetCell.querySelector(".top-cell") && hasTrackSwitch(targetCell);
 
             if (isSwitchTriggered) {
-                isolatedTrack = isolatedTrack === 'A' ? 'B' : 'A';
+                isolatedTrack = isolatedTrack === "A" ? "B" : "A";
             }
 
             if (stepIndex !== -1) {
@@ -86,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function getCellForStep(stepIndex, track, rowsA, rowsB) {
-        const targetRow = track === 'A' ? rowsA[stepIndex] : rowsB[stepIndex];
+        const targetRow = track === "A" ? rowsA[stepIndex] : rowsB[stepIndex];
         return targetRow ? targetRow.querySelector("td.pick") : null;
     }
 

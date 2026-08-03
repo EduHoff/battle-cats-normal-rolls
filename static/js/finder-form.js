@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (eventSelect) {
         eventSelect.addEventListener("change", () => {
             const rollSelects = document.querySelectorAll('select[name="rolls"]');
-            rollSelects.forEach(select => {
+            rollSelects.forEach((select) => {
                 select.selectedIndex = 0;
             });
 
