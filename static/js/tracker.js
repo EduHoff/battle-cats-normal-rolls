@@ -74,8 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             targetCell.classList.add("picked", "last-picked");
 
+            const switchElem = targetCell.querySelector(".track-link-switch");
+            const hasSwitch = switchElem !== null;
             const clickedOnSwitch = e.target.closest(".track-link-switch") !== null;
-            if (clickedOnSwitch) {
+
+            if (clickedOnSwitch || hasSwitch) {
                 isolatedTrack = isolatedTrack === "A" ? "B" : "A";
             }
 
