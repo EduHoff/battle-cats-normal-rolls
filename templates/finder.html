@@ -40,17 +40,11 @@
                         </select>
                     </div>
 
-                    <div class="rolls-list" style="margin-top: 20px">
+                    <div class="rolls-list">
                         <h3>Your Rolls:</h3>
                         {% for i in range(end=10) %}
-                        <div
-                            class="roll-input-group"
-                            style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px"
-                        >
-                            <label
-                                for="roll-{{ loop.index }}"
-                                style="display: inline-block; min-width: 28px; text-align: right"
-                            >
+                        <div class="roll-input-group">
+                            <label for="roll-{{ loop.index }}">
                                 {{ loop.index }}.
                             </label>
                             <select id="roll-{{ loop.index }}" name="rolls">
@@ -65,16 +59,18 @@
                         {% endfor %}
                     </div>
 
-                    <button type="submit" style="margin-top: 20px">Find Seed</button>
+                    <button type="submit">Find Seed</button>
                 </form>
             </section>
 
             {% if error %}
-            <div class="error-message" style="color: red; margin-top: 20px">
+            <div class="error-message">
                 <p><strong>Error:</strong> {{ error }}</p>
             </div>
-            {% endif %} {% if results %}
-            <section class="finder-results" style="margin-top: 30px">
+            {% endif %}
+
+            {% if results %}
+            <section class="finder-results">
                 <h3>Results Found ({{ results | length }}):</h3>
                 <table class="results-table">
                     <thead>

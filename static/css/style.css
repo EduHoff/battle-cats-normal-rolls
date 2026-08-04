@@ -782,6 +782,59 @@ td.bottom-cell {
     border-bottom: 1px solid #777 !important;
 }
 
+footer {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.rolls-list {
+    margin-top: 20px;
+}
+
+.roll-input-group {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.roll-input-group label {
+    display: inline-block;
+    min-width: 28px;
+    text-align: right;
+}
+
+.finder-form-container button[type="submit"] {
+    margin-top: 20px;
+}
+
+.error-message {
+    color: #d9534f;
+    margin-top: 20px;
+}
+
+.finder-results {
+    margin-top: 30px;
+}
+
+.results-table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #777;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+.results-table th {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
 @media (max-width: 767px) {
     article {
         border: 0;
