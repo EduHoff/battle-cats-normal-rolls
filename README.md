@@ -47,7 +47,7 @@ If you prefer not to install the Rust toolchain, you can build and run the appli
 ```bash
 git clone https://github.com/EduHoff/battle-cats-normal-rolls.git
 cd battle-cats-normal-rolls
-docker compose up --build -d
+docker compose up --build
 ```
 
 The server will be available at http://localhost:3000

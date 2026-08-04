@@ -21,7 +21,7 @@
                 <td
                     class="top-cell pick rarity-{{ row.cell_a.rarity }} {% if row.cell_a.is_utility %}utility-item{% endif %}"
                 >
-                    <a class="track-link-direct" href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}">
+                    <a class="track-link-direct" href="/?seed={{ row.cell_a.seed }}&count={{ count }}&event={{ selected_event }}&last={{ row.cell_a.name }}">
                         {{ row.cell_a.name }}
                     </a>
 
@@ -67,7 +67,7 @@
                 <td
                     class="top-cell pick rarity-{{ row.cell_b.rarity }} {% if row.cell_b.is_utility %}utility-item{% endif %}"
                 >
-                    <a class="track-link-direct" href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}">
+                    <a class="track-link-direct" href="/?seed={{ row.cell_b.seed }}&count={{ count }}&event={{ selected_event }}&last={{ row.cell_b.name }}">    
                         {{ row.cell_b.name }}
                     </a>
 

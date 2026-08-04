@@ -51,6 +51,18 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="control-group">
+                    <label for="last">Last roll:</label>
+                    <select id="last" name="last">
+                        <option value=""></option>
+                        {% for unit in available_units %}
+                            <option value="{{ unit }}" {% if unit == selected_last %}selected{% endif %}>
+                                {{ unit }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
             
                 <button type="submit">Update</button>
             </form>

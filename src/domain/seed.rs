@@ -148,7 +148,12 @@ pub fn generate_rolls(mut seed: u32, num_rolls: usize, banner: &BannerData) -> V
     rolls
 }
 
-pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) -> Vec<Row> {
+pub fn build_tracker_rows(
+    initial_seed: u32,
+    count: usize,
+    banner: &BannerData,
+    last_roll: &str,
+) -> Vec<Row> {
     let track_a_rolls = generate_rolls(initial_seed, count, banner);
 
     let b_initial_seed = advance_seed(initial_seed);
@@ -270,16 +275,25 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
         });
     }
 
-    apply_active_path_switches(rows, banner)
+    apply_active_path_switches(rows, banner, last_roll)
 }
 
-fn apply_active_path_switches(mut rows: Vec<Row>, banner: &BannerData) -> Vec<Row> {
+fn apply_active_path_switches(
+    mut rows: Vec<Row>,
+    banner: &BannerData,
+    last_roll: &str,
+) -> Vec<Row> {
     if rows.is_empty() {
         return rows;
     }
 
     let mut current_track = CurrentTrack::A;
-    let mut last_received_unit: Option<String> = None;
+
+    let mut last_received_unit: Option<String> = if last_roll.trim().is_empty() {
+        None
+    } else {
+        Some(last_roll.to_string())
+    };
 
     for i in 0..rows.len() {
         let (cell_name, cell_rarity, cell_seed) = {
