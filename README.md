@@ -37,7 +37,9 @@ You can access the hosted version of the application directly in your browser:
 
 ## Pre-compiled Binaries
 
-(nothing yet)
+Pre-compiled standalone binaries for Linux and other platforms are available on the [GitHub Releases](https://github.com/EduHoff/battle-cats-normal-rolls/releases) page.
+
+Simply download the asset corresponding to your target platform, extract the archive, and run the executable alongside the `static/` and `templates/` folders.
 
 ---
 
