@@ -42,6 +42,12 @@ pub struct Row {
     pub cell_b: CellData,
 }
 
+#[derive(PartialEq)]
+enum CurrentTrack {
+    A,
+    B,
+}
+
 pub fn get_rarity(seed: u32, rate_cum_sum: &[u32]) -> usize {
     let max_rate = *rate_cum_sum.last().unwrap_or(&10000);
     if max_rate == 0 {
@@ -262,6 +268,91 @@ pub fn build_tracker_rows(initial_seed: u32, count: usize, banner: &BannerData) 
                 dupe_target_no: dupe_target_b,
             },
         });
+    }
+
+    apply_active_path_switches(rows, banner)
+}
+
+fn apply_active_path_switches(mut rows: Vec<Row>, banner: &BannerData) -> Vec<Row> {
+    if rows.is_empty() {
+        return rows;
+    }
+
+    let mut current_track = CurrentTrack::A;
+    let mut last_received_unit: Option<String> = None;
+
+    for i in 0..rows.len() {
+        let (cell_name, cell_rarity, cell_seed) = {
+            let row = rows.get(i).expect("index i must be within rows bounds");
+
+            match current_track {
+                CurrentTrack::A => (row.cell_a.name.clone(), row.cell_a.rarity, row.cell_a.seed),
+                CurrentTrack::B => (row.cell_b.name.clone(), row.cell_b.rarity, row.cell_b.seed),
+            }
+        };
+
+        let pool_allows_reroll = banner.pools.get(cell_rarity).is_some_and(|p| p.reroll);
+
+        let is_dupe_with_previous = match &last_received_unit {
+            Some(prev) => prev == &cell_name,
+            None => false,
+        };
+
+        if is_dupe_with_previous && pool_allows_reroll {
+            let pool = banner
+                .pools
+                .get(cell_rarity)
+                .expect("cell_rarity index must be within banner pools bounds");
+
+            let mut reroll_seed = cell_seed;
+            let (unit_id, _) = get_unit(reroll_seed, &pool.units, &[]);
+            let mut reroll_unit_name = cell_name.clone();
+            let mut reroll_removed = vec![unit_id];
+
+            while reroll_unit_name == cell_name {
+                reroll_seed = advance_seed(reroll_seed);
+                let (next_id, next_name) = get_unit(reroll_seed, &pool.units, &reroll_removed);
+                reroll_unit_name = next_name;
+                reroll_removed.push(next_id);
+            }
+
+            let target_track_letter = if current_track == CurrentTrack::A {
+                "B"
+            } else {
+                "A"
+            };
+            let target_row_number = i + 2;
+
+            let target_seed = rows.get(i + 1).map(|next_row| {
+                if current_track == CurrentTrack::A {
+                    next_row.cell_b.seed
+                } else {
+                    next_row.cell_a.seed
+                }
+            });
+
+            let cell = rows
+                .get_mut(i)
+                .map(|row| match current_track {
+                    CurrentTrack::A => &mut row.cell_a,
+                    CurrentTrack::B => &mut row.cell_b,
+                })
+                .expect("i index must be within rows bounds for mutable access");
+
+            cell.dupe_name = Some(reroll_unit_name.clone());
+            cell.dupe_target_no = Some(format!("{target_row_number}{target_track_letter}"));
+            cell.dupe_seed = target_seed;
+
+            current_track = if current_track == CurrentTrack::A {
+                CurrentTrack::B
+            } else {
+                CurrentTrack::A
+            };
+
+            last_received_unit = Some(reroll_unit_name);
+        } else {
+            last_received_unit = Some(cell_name);
+        }
     }
 
     rows
