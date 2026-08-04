@@ -20,6 +20,27 @@ Clicking on any cell in the table simulates your roll path from the top. Previou
   * While there is no difference in-game, this ID distinction prevents it from being used to force track switches across different banners.
   * To distinguish between the two in the tracker, the *Lucky Ticket G*-exclusive version is marked with **(β)**.
 
+---
+
+## Live Demo & Online Access
+
+You can access the hosted version of the application directly in your browser:
+
+* **Live Site:** https://battle-cats-normal-rolls.onrender.com
+
+> **Note on Free Cloud Hosting Limitations:**  
+> The online instance is hosted on a free cloud tier with shared CPU and memory limits. Additionally, the service may go into sleep mode after periods of inactivity, causing a brief delay (cold start) on initial loading.  
+> 
+> For resource-heavy tasks (such as deep seed searching) or maximum execution speed, running the application locally via Docker or compiling from source is recommended.
+
+---
+
+## Pre-compiled Binaries
+
+(nothing yet)
+
+---
+
 ## Installation & Building
 
 ### Prerequisites
@@ -47,7 +68,7 @@ If you prefer not to install the Rust toolchain, you can build and run the appli
 ```bash
 git clone https://github.com/EduHoff/battle-cats-normal-rolls.git
 cd battle-cats-normal-rolls
-docker compose up --build
+docker compose up --build -d
 ```
 
 The server will be available at http://localhost:3000
