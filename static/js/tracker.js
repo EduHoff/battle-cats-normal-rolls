@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tableA || !tableB) return;
 
     container.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return;
+
         const targetCell = e.target.closest("td.pick");
         if (!targetCell) return;
 
